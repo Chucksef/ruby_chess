@@ -11,6 +11,8 @@ class Game
     attr_accessor :pieces
 
     def initialize
+        @checkmate = false
+        @current_player = "White"
         set_up_pieces
         set_up_board
     end
@@ -18,6 +20,9 @@ class Game
     def play
         # welcome_message
         show_board
+        unless @checkmate
+            take_turn
+        end
     end
     
     private
@@ -123,6 +128,7 @@ class Game
     
     def take_turn
         #Ask user to select piece
+        puts "#{@current_player}: Choose a Piece (A1 - H8)"
         #Display valid moves
         #Ask user to move piece
         #Check for Checkmate
