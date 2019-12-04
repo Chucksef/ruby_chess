@@ -120,16 +120,15 @@ class Game
     
     def take_turn
         #Ask user to select piece
-        puts "#{@current_player}: Choose a Piece (A1 - H8)"
-        choice = nil
-        piece = nil
+        puts "#{@current_player}: Choose a Piece to move (A1 - H8)"
+        piece = validate_coords(gets.chomp)
         until piece
             show_board
-            puts "Select a piece by entering one letter and one number (e.g. A1, C4, H8)"
-            choice = validate_coords(gets.chomp)
-            piece = select_piece(choice)
+            puts "Select a #{@current_player} piece by entering one letter and one number (e.g. A1, C4, H8)"
+            piece = validate_coords(gets.chomp)
         end
         show_board
+        puts "Select "
 
         #Ask user to move piece
         #Check for Checkmate
