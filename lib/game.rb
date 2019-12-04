@@ -12,6 +12,7 @@ class Game
 
     def initialize
         @checkmate = false
+        @selected = nil
         @current_player = "White"
         set_up_pieces
         set_up_board
@@ -102,7 +103,11 @@ class Game
             col = 0
             8.times do
                 lines[0] += "     |"
-                lines[1] += "  #{@spaces[row][col]}  |"
+                lines[1] += " "
+                lines[1] += @selected == [row, col] ? "(" : " "
+                lines[1] += "#{@spaces[row][col]}"
+                lines[1] += @selected == [row, col] ? ")" : " "
+                lines[1] += " |"
                 lines[2] += "_____|"
                 col += 1
             end
@@ -122,11 +127,9 @@ class Game
             show_board
             puts "Select a piece by entering one letter and one number (e.g. A1, C4, H8)"
             choice = validate_coords(gets.chomp)
-            puts "selecting piece at #{choice}"
             piece = select_piece(choice)
         end
-        puts "#{piece}"
-        puts "You selected a valid #{piece.name} at coords: #{piece.position}!"
+        show_board
 
         #Ask user to move piece
         #Check for Checkmate
@@ -157,10 +160,11 @@ class Game
 
         @pieces.each do |piece|
             if piece.position == coords && piece.player == @current_player[0].downcase
+                @selected = piece.position
                 return piece
             end
         end
-        return nil
+        nil
     end
 
     def remove_piece
