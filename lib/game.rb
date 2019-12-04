@@ -120,12 +120,12 @@ class Game
     
     def take_turn
         #Ask user to select piece
-        puts "#{@current_player}: Choose a Piece (A1 - H8)"
         choice = nil
         piece = nil
-        until piece
+        until piece.is_a?(Piece)
             show_board
-            puts "Select a piece by entering one letter and one number (e.g. A1, C4, H8)"
+            puts "#{@current_player}: Choose a Piece (A1 - H8)"
+            puts "#{choice}" if choice.is_a?(String)
             choice = validate_coords(gets.chomp)
             piece = select_piece(choice)
         end
