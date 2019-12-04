@@ -85,20 +85,7 @@ class Game
             z = piece.player == "b" ? piece.black_symbol : piece.white_symbol
             @spaces[x][y] = z
         end
-    end
-    
-    def validate_coords(string)
-        col = [string[0].upcase]
-        row = [string[1].to_i]
-        
-        cols = ("A".."H").to_a
-        rows = (1..8).to_a
-        
-        coords_x = col.map { |c| cols.index(c) }
-        coords_y = row.map { |r| rows.index(r) }
-        
-        return [coords_x[0], coords_y[0]]
-    end
+    end 
     
     def show_board
         head = ""
@@ -129,9 +116,34 @@ class Game
     def take_turn
         #Ask user to select piece
         puts "#{@current_player}: Choose a Piece (A1 - H8)"
-        #Display valid moves
+        choice = validate_coords(gets.chomp)
+        until choice
+            show_board
+            puts "Please enter only one letter and one number (e.g. A1, C4, H8)"
+            choice = validate_coords(gets.chomp)
+        end
+
         #Ask user to move piece
         #Check for Checkmate
+    end
+
+    def validate_coords(string)
+        
+        return false if string.length != 2
+
+        col = [string[0].upcase]
+        row = [string[1].to_i]
+        
+        cols = ("A".."H").to_a
+        rows = (1..8).to_a
+        coords = []
+        coords << col.map { |c| cols.index(c) }
+        coords << row.map { |r| rows.index(r) }
+        coords = [coords[0][0],coords[1][0]]
+        
+        return false if coords.include?(nil)
+        coords
+
     end
     
     def remove_piece

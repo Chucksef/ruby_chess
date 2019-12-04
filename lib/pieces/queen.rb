@@ -6,8 +6,8 @@ class Queen < Piece
         @game = game
         @position = pos
         @player = player
-        @white_symbol = "♝"
-        @black_symbol = "♗"
+        @white_symbol = "♛"
+        @black_symbol = "♕"
         @rel_moves = []
 
         ((1..7).to_a).each do |i|
