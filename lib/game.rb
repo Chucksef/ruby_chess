@@ -16,14 +16,18 @@ class Game
     end
     
     def play
-        welcome_message
+        # welcome_message
         show_board
     end
     
     private
 
     def welcome_message
-        
+        system "clear"
+        puts "Welcome to Chess, or Whatever."
+        puts ""
+        puts "Press ENTER to begin a new game."
+        gets
     end
     
     def set_up_pieces
@@ -78,7 +82,7 @@ class Game
         end
     end
     
-    def get_coords(string)
+    def validate_coords(string)
         col = [string[0].upcase]
         row = [string[1].to_i]
         
@@ -95,23 +99,22 @@ class Game
         head = ""
         system "clear"
         puts ""
-        puts "                        CHESS OR WHATEVER"
+        puts "                CHESS OR WHATEVER"
         puts ""
-        puts "    A       B       C       D       E       F       G       H"
-        8.times {head += " _______"}
+        puts "   A     B     C     D     E     F     G     H"
+        8.times {head += " _____"}
         puts head
         row = 0
         8.times do
-            lines = Array.new(4) {"|"}
+            lines = Array.new(3) {"|"}
             col = 0
             8.times do
-                lines[0] += "       |"
-                lines[1] += "       |"
-                lines[2] += "   #{@spaces[row][col]}   |"
-                lines[3] += "_______|"
+                lines[0] += "     |"
+                lines[1] += "  #{@spaces[row][col]}  |"
+                lines[2] += "_____|"
                 col += 1
             end
-            lines[2] += "  #{(1..8).to_a[row]}"
+            lines[1] += "  #{(1..8).to_a[row]}"
             lines.each {|l| puts l}
             row += 1
         end
