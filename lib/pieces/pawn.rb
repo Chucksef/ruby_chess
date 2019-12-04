@@ -4,6 +4,7 @@ class Pawn < Piece
 
     def initialize(pos, player, game)
         @game = game
+        @name = "PAWN"
         @moved = false
         @position = pos
         @player = player

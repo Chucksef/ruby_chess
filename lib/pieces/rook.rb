@@ -4,6 +4,7 @@ class Rook < Piece
     
     def initialize(pos, player, game)
         @game = game
+        @name = "ROOK"
         @position = pos
         @player = player
         @white_symbol = "♜"

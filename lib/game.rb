@@ -116,12 +116,17 @@ class Game
     def take_turn
         #Ask user to select piece
         puts "#{@current_player}: Choose a Piece (A1 - H8)"
-        choice = validate_coords(gets.chomp)
-        until choice
+        choice = nil
+        piece = nil
+        until piece
             show_board
-            puts "Please enter only one letter and one number (e.g. A1, C4, H8)"
+            puts "Select a piece by entering one letter and one number (e.g. A1, C4, H8)"
             choice = validate_coords(gets.chomp)
+            puts "selecting piece at #{choice}"
+            piece = select_piece(choice)
         end
+        puts "#{piece}"
+        puts "You selected a valid #{piece.name} at coords: #{piece.position}!"
 
         #Ask user to move piece
         #Check for Checkmate
@@ -139,13 +144,25 @@ class Game
         coords = []
         coords << col.map { |c| cols.index(c) }
         coords << row.map { |r| rows.index(r) }
-        coords = [coords[0][0],coords[1][0]]
+        coords = [coords[1][0],coords[0][0]]
         
         return false if coords.include?(nil)
         coords
 
     end
     
+    def select_piece(coords)
+        #iterate over all pieces
+            #return piece if piece.position == coords && player == current_player
+
+        @pieces.each do |piece|
+            if piece.position == coords && piece.player == @current_player[0].downcase
+                return piece
+            end
+        end
+        return nil
+    end
+
     def remove_piece
 
     end

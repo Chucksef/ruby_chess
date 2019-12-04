@@ -1,5 +1,5 @@
 class Piece
-    attr_accessor :player, :position, :moves, :white_symbol, :black_symbol
+    attr_accessor :name, :player, :position, :moves, :white_symbol, :black_symbol
     
     private
     
