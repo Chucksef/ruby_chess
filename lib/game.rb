@@ -8,14 +8,16 @@ require "./lib/pieces/bishop"
 require "./lib/pieces/knight"
 
 class Game
+    attr_accessor :pieces
 
     def initialize
-        @pieces = set_up_pieces
+        set_up_pieces
+        set_up_board
     end
     
     def play
         welcome_message
-
+        show_board
     end
     
     private
@@ -25,14 +27,71 @@ class Game
     end
     
     def set_up_pieces
-        spaces = []
-        8.times do
-            spaces << Array.new(8) {" "}
-        end
-        spaces
+        @pieces = []
+        @pieces << Rook.new([0,0], "b", self)
+        @pieces << Knight.new([0,1], "b", self)
+        @pieces << Bishop.new([0,2], "b", self)
+        @pieces << Queen.new([0,3], "b", self)
+        @pieces << King.new([0,4], "b", self)
+        @pieces << Bishop.new([0,5], "b", self)
+        @pieces << Knight.new([0,6], "b", self)
+        @pieces << Rook.new([0,7], "b", self)
+        @pieces << Pawn.new([1,0], "b", self)
+        @pieces << Pawn.new([1,1], "b", self)
+        @pieces << Pawn.new([1,2], "b", self)
+        @pieces << Pawn.new([1,3], "b", self)
+        @pieces << Pawn.new([1,4], "b", self)
+        @pieces << Pawn.new([1,5], "b", self)
+        @pieces << Pawn.new([1,6], "b", self)
+        @pieces << Pawn.new([1,7], "b", self)
+
+        @pieces << Pawn.new([6,0], "w", self)
+        @pieces << Pawn.new([6,1], "w", self)
+        @pieces << Pawn.new([6,2], "w", self)
+        @pieces << Pawn.new([6,3], "w", self)
+        @pieces << Pawn.new([6,4], "w", self)
+        @pieces << Pawn.new([6,5], "w", self)
+        @pieces << Pawn.new([6,6], "w", self)
+        @pieces << Pawn.new([6,7], "w", self)
+        @pieces << Rook.new([7,0], "w", self)
+        @pieces << Knight.new([7,1], "w", self)
+        @pieces << Bishop.new([7,2], "w", self)
+        @pieces << King.new([7,3], "w", self)
+        @pieces << Queen.new([7,4], "w", self)
+        @pieces << Bishop.new([7,5], "w", self)
+        @pieces << Knight.new([7,6], "w", self)
+        @pieces << Rook.new([7,7], "w", self)
     end
 
-    def print_board
+    def set_up_board
+        @spaces = []
+        8.times do 
+            row = []
+            8.times { row << " " }
+            @spaces << row
+        end
+        @pieces.each do |piece|
+            x = piece.position[0]
+            y = piece.position[1]
+            z = piece.player == "b" ? piece.black_symbol : piece.white_symbol
+            @spaces[x][y] = z
+        end
+    end
+    
+    def get_coords(string)
+        col = [string[0].upcase]
+        row = [string[1].to_i]
+        
+        cols = ("A".."H").to_a
+        rows = (1..8).to_a
+        
+        coords_x = col.map { |c| cols.index(c) }
+        coords_y = row.map { |r| rows.index(r) }
+        
+        return [coords_x[0], coords_y[0]]
+    end
+    
+    def show_board
         head = ""
         system "clear"
         puts ""
@@ -48,7 +107,7 @@ class Game
             8.times do
                 lines[0] += "       |"
                 lines[1] += "       |"
-                lines[2] += "   #{@pieces[row][col]}   |"
+                lines[2] += "   #{@spaces[row][col]}   |"
                 lines[3] += "_______|"
                 col += 1
             end
@@ -60,7 +119,6 @@ class Game
     end
     
     def take_turn
-        #Address user
         #Ask user to select piece
         #Display valid moves
         #Ask user to move piece
@@ -69,28 +127,6 @@ class Game
     
     def remove_piece
 
-    end
-
-    def spawn_knight
-        puts "Choose a space to put your knight (format: A1 - H8)"
-        puts ""
-        start = gets.chomp
-        2.times {puts ""}
-        kn = Knight.new(start)
-
-        add_piece(kn)
-        add_targets(kn)
-
-        puts "Now set the ending point for where you want the knight to go."
-        puts ""
-        ending = gets.chomp
-
-        knight_moves(kn, ending)
-    end
-
-    def add_piece(piece)
-        @pieces[piece.position[1]][piece.position[0]] = piece.symbol
-        print_board
     end
 
 end

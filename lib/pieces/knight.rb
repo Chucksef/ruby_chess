@@ -1,9 +1,13 @@
 require "./lib/piece"
 
-class Knight
+class Knight < Piece
     
-    @@rel_moves = [[1,2], [2,1], [2,-1], [1,-2], [-1, -2], [-2, -1], [-2, 1], [-1, 2]]
-    @white_symbol = "♞"
-    @black_symbol = "♘"
-    
+    def initialize(pos, player, game)
+        @game = game
+        @position = pos
+        @player = player
+        @white_symbol = "♞"
+        @black_symbol = "♘"
+        @rel_moves = [[1,2], [2,1], [2,-1], [1,-2], [-1, -2], [-2, -1], [-2, 1], [-1, 2]]
+    end
 end
