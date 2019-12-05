@@ -159,7 +159,6 @@ class Game
         @selected = nil
         setup_board
         show_board
-        puts "Select "
 
         #Check for Checkmate
     end

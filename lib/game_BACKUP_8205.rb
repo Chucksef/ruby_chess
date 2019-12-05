@@ -132,6 +132,7 @@ class Game
     
     def take_turn
         #Ask user to select piece
+<<<<<<< HEAD
         choice = nil
         piece = nil
         destination = nil
@@ -142,6 +143,14 @@ class Game
             puts "#{choice}\n\n" if choice.is_a?(String)
             choice = validate_coords(gets.chomp)
             piece = get_piece(choice)
+=======
+        puts "#{@current_player}: Choose a Piece to move (A1 - H8)"
+        piece = validate_coords(gets.chomp)
+        until piece
+            show_board
+            puts "Select a #{@current_player} piece by entering one letter and one number (e.g. A1, C4, H8)"
+            piece = validate_coords(gets.chomp)
+>>>>>>> master
         end
 
         piece.select
