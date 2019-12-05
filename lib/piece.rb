@@ -15,7 +15,11 @@ class Piece
     end
 
     def remove
-        @position = [-1,-1]
+        @game.pieces.delete(self)
+        @game.pieces.each do |x|
+            puts "#{x.position}: #{x.name}"
+        end
+        gets
     end
 
     private

@@ -37,6 +37,7 @@ class Pawn < Piece
                 true
             end
         end
+        
         #filter out double move unless pawn has not moved yet
         @moves = @moves.select do |mv|
             if (@position[0] - mv[0]).abs == 2 && @moved == true
@@ -45,10 +46,17 @@ class Pawn < Piece
                 true
             end
         end
-                
 
-        puts "legal moves for pawn:"
-        @moves.each {|x| puts x.to_s}
-        gets
+        #add in diagonal attack if enemies present in forward direction diagonally
+        opponents = []
+
+        puts "is there a piece at [#{@position[0]-dir},#{@position[1]+1}]: #{@game.get_piece([@position[0]-dir, @position[1]+1])}"
+        opponents << @game.get_piece([@position[0]-dir, @position[1]+1]) if @game.get_piece([@position[0]-dir, @position[1]+1])
+        puts "is there a piece at [#{@position[0]-dir},#{@position[1]+1}]: #{@game.get_piece([@position[0]-dir, @position[1]-1])}"
+        opponents << @game.get_piece([@position[0]-dir, @position[1]-1]) if @game.get_piece([@position[0]-dir, @position[1]-1])
+
+        opponents.each do |opp|
+            @moves << opp.position if opp.player != @player
+        end
     end
 end
