@@ -14,14 +14,14 @@ class Game
         @checkmate = false
         @selected = nil
         @current_player = "White"
-        set_up_pieces
-        set_up_board
+        setup_initial_pieces
+        setup_board
     end
     
     def play
         # welcome_message
         show_board
-        unless @checkmate
+        until @checkmate
             take_turn
         end
     end
@@ -36,7 +36,7 @@ class Game
         gets
     end
     
-    def set_up_pieces
+    def setup_initial_pieces
         @pieces = []
         @pieces << Rook.new([0,0], "b", self)
         @pieces << Knight.new([0,1], "b", self)
@@ -73,7 +73,7 @@ class Game
         @pieces << Rook.new([7,7], "w", self)
     end
 
-    def set_up_board
+    def setup_board
         @spaces = []
         8.times do 
             row = []
@@ -122,16 +122,29 @@ class Game
         #Ask user to select piece
         choice = nil
         piece = nil
+        destination = nil
+
         until piece.is_a?(Piece)
             show_board
-            puts "#{@current_player}: Choose a Piece (A1 - H8)"
-            puts "#{choice}" if choice.is_a?(String)
+            puts "#{@current_player}: Choose a Piece (A1 - H8)\n\n"
+            puts "#{choice}\n\n" if choice.is_a?(String)
             choice = validate_coords(gets.chomp)
             piece = select_piece(choice)
         end
+
+        until destination
+            show_board
+            puts "Where would you like to move the #{piece.name} (A1 - H8)"
+            destination = validate_coords(gets.chomp)
+            # destination = piece.valid_move?(destination)
+        end
+        piece.move(destination)
+        puts "moved #{piece.name} to #{destination}"
+        puts "now piece location is #{piece.position}"
+        @selected = nil
+        setup_board
         show_board
 
-        #Ask user to move piece
         #Check for Checkmate
     end
 
@@ -155,9 +168,6 @@ class Game
     end
     
     def select_piece(coords)
-        #iterate over all pieces
-            #return piece if piece.position == coords && player == current_player
-
         @pieces.each do |piece|
             if piece.position == coords && piece.player == @current_player[0].downcase
                 @selected = piece.position
