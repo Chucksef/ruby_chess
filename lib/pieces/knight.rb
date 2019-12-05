@@ -15,9 +15,16 @@ class Knight < Piece
     def get_legal_moves
         @moves = @moves.select do |move|
             #filter out self-occupied spaces
-            
+            if @game.get_piece(move) != nil
+                @game.get_piece(move).player != @player
+            else
+                true
+            end
             #filter out l-o-s blocked spaces
 
         end
+        puts "All Legal Moves for #{@name} @ #{position}"
+        @moves.each { |x| puts "#{x}"}
+        gets
     end
 end

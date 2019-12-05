@@ -8,7 +8,7 @@ require "./lib/pieces/bishop"
 require "./lib/pieces/knight"
 
 class Game
-    attr_accessor :pieces
+    attr_accessor :pieces, :selected
 
     def initialize
         @checkmate = false
@@ -26,10 +26,9 @@ class Game
         end
     end
 
-    def select_piece(coords)
+    def get_piece(coords)
         @pieces.each do |piece|
             if piece.position == coords
-                @selected = piece.position
                 return piece
             end
         end
@@ -142,7 +141,7 @@ class Game
             puts "#{@current_player}: Choose a Piece (A1 - H8)\n\n"
             puts "#{choice}\n\n" if choice.is_a?(String)
             choice = validate_coords(gets.chomp)
-            piece = select_piece(choice)
+            piece = get_piece(choice)
         end
 
         piece.select
@@ -154,11 +153,8 @@ class Game
             # destination = piece.valid_move?(destination)
         end
 
-
-
         opponent = piece.move(destination)
         opponent.remove if opponent
-
 
         @selected = nil
         setup_board
