@@ -23,8 +23,5 @@ class Knight < Piece
             #filter out l-o-s blocked spaces
 
         end
-        puts "All Legal Moves for #{@name} @ #{position}"
-        @moves.each { |x| puts "#{x}"}
-        gets
     end
 end

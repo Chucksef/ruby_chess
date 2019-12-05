@@ -150,7 +150,7 @@ class Game
             show_board
             puts "Where would you like to move the #{piece.name} (A1 - H8)"
             destination = validate_coords(gets.chomp)
-            # destination = piece.valid_move?(destination)
+            destination = nil unless piece.moves.include?(destination)
         end
 
         opponent = piece.move(destination)
