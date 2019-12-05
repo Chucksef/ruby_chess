@@ -10,13 +10,6 @@ class Rook < Piece
         @white_symbol = "♜"
         @black_symbol = "♖"
         @rel_moves = []
-
-        ((1..7).to_a).each do |i|
-            @rel_moves << [0, i] 
-            @rel_moves << [(-1)*i, 0]
-            @rel_moves << [0, (-1)*i]
-            @rel_moves << [(-1)*i, 0]
-        end
     end
 
     def get_legal_moves
@@ -32,14 +25,9 @@ class Rook < Piece
                     @moves << test_coords if piece.player != @player 
                     directions[idx] = [-200,-200]
                 else 
-                    puts "adding #{test_coords} to the list"
                     @moves << test_coords
                 end
             end
         end
-        
-        puts
-        puts "legal moves:"
-        @moves.each {|x| puts x.to_s}
     end
 end
