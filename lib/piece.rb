@@ -10,6 +10,7 @@ class Piece
     def move(destination)
         opponent = @game.get_piece(destination)        
         @position = destination
+        @moved = true
         opponent
     end
 

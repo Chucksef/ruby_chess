@@ -114,6 +114,7 @@ class Game
             lines = Array.new(3) {"|"}
             col = 0
             8.times do
+                # implement reverse color pattern: \e[7mTEXTHERE>\e[27m #{self}
                 lines[0] += "     |"
                 lines[1] += " "
                 lines[1] += @selected == [row, col] ? "(" : " "
@@ -148,7 +149,7 @@ class Game
 
         until destination
             show_board
-            puts "Where would you like to move the #{piece.name} (A1 - H8)"
+            puts "Where would you like to move the #{piece.name} (A1 - H8)\n\n"
             destination = validate_coords(gets.chomp)
             destination = nil unless piece.moves.include?(destination)
         end
@@ -159,7 +160,6 @@ class Game
         @selected = nil
         setup_board
         show_board
-        puts "Select "
 
         #Check for Checkmate
     end
