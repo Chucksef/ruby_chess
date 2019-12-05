@@ -16,9 +16,6 @@ class Piece
 
     def remove
         @game.pieces.delete(self)
-        @game.pieces.each do |x|
-            puts "#{x.position}: #{x.name}"
-        end
         gets
     end
 
