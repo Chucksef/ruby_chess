@@ -2,6 +2,7 @@ class Piece
     attr_accessor :name, :player, :position, :moves, :white_symbol, :black_symbol
     
     def select
+        # return nil if @game.current_player != @player
         @game.selected = @position
         get_all_moves
         get_legal_moves
@@ -16,7 +17,6 @@ class Piece
 
     def remove
         @game.pieces.delete(self)
-        gets
     end
 
     private

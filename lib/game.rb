@@ -64,10 +64,10 @@ class Game
         @pieces << Pawn.new([1,6], "Black", self)
         @pieces << Pawn.new([1,7], "Black", self)
 
-        @pieces << Pawn.new([6,0], "White", self)
+        # @pieces << Pawn.new([6,0], "White", self)
         @pieces << Pawn.new([6,1], "White", self)
         @pieces << Pawn.new([6,2], "White", self)
-        @pieces << Pawn.new([6,3], "White", self)
+        # @pieces << Pawn.new([6,3], "White", self)
         @pieces << Pawn.new([6,4], "White", self)
         @pieces << Pawn.new([6,5], "White", self)
         @pieces << Pawn.new([6,6], "White", self)
