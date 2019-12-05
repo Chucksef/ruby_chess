@@ -11,4 +11,13 @@ class Knight < Piece
         @black_symbol = "♘"
         @rel_moves = [[1,2], [2,1], [2,-1], [1,-2], [-1, -2], [-2, -1], [-2, 1], [-1, 2]]
     end
+
+    def get_legal_moves
+        @moves = @moves.select do |move|
+            #filter out self-occupied spaces
+            
+            #filter out l-o-s blocked spaces
+
+        end
+    end
 end

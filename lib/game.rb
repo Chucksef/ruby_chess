@@ -25,6 +25,16 @@ class Game
             take_turn
         end
     end
+
+    def select_piece(coords)
+        @pieces.each do |piece|
+            if piece.position == coords
+                @selected = piece.position
+                return piece
+            end
+        end
+        nil
+    end
     
     private
 
@@ -38,39 +48,42 @@ class Game
     
     def setup_initial_pieces
         @pieces = []
-        @pieces << Rook.new([0,0], "b", self)
-        @pieces << Knight.new([0,1], "b", self)
-        @pieces << Bishop.new([0,2], "b", self)
-        @pieces << Queen.new([0,3], "b", self)
-        @pieces << King.new([0,4], "b", self)
-        @pieces << Bishop.new([0,5], "b", self)
-        @pieces << Knight.new([0,6], "b", self)
-        @pieces << Rook.new([0,7], "b", self)
-        @pieces << Pawn.new([1,0], "b", self)
-        @pieces << Pawn.new([1,1], "b", self)
-        @pieces << Pawn.new([1,2], "b", self)
-        @pieces << Pawn.new([1,3], "b", self)
-        @pieces << Pawn.new([1,4], "b", self)
-        @pieces << Pawn.new([1,5], "b", self)
-        @pieces << Pawn.new([1,6], "b", self)
-        @pieces << Pawn.new([1,7], "b", self)
+        @pieces << Rook.new([0,0], "Black", self)
+        @pieces << Knight.new([0,1], "Black", self)
+        @pieces << Bishop.new([0,2], "Black", self)
+        @pieces << Queen.new([0,3], "Black", self)
+        @pieces << King.new([0,4], "Black", self)
+        @pieces << Bishop.new([0,5], "Black", self)
+        @pieces << Knight.new([0,6], "Black", self)
+        @pieces << Rook.new([0,7], "Black", self)
+        @pieces << Pawn.new([1,0], "Black", self)
+        @pieces << Pawn.new([1,1], "Black", self)
+        @pieces << Pawn.new([1,2], "Black", self)
+        @pieces << Pawn.new([1,3], "Black", self)
+        @pieces << Pawn.new([1,4], "Black", self)
+        @pieces << Pawn.new([1,5], "Black", self)
+        @pieces << Pawn.new([1,6], "Black", self)
+        @pieces << Pawn.new([1,7], "Black", self)
 
-        @pieces << Pawn.new([6,0], "w", self)
-        @pieces << Pawn.new([6,1], "w", self)
-        @pieces << Pawn.new([6,2], "w", self)
-        @pieces << Pawn.new([6,3], "w", self)
-        @pieces << Pawn.new([6,4], "w", self)
-        @pieces << Pawn.new([6,5], "w", self)
-        @pieces << Pawn.new([6,6], "w", self)
-        @pieces << Pawn.new([6,7], "w", self)
-        @pieces << Rook.new([7,0], "w", self)
-        @pieces << Knight.new([7,1], "w", self)
-        @pieces << Bishop.new([7,2], "w", self)
-        @pieces << King.new([7,3], "w", self)
-        @pieces << Queen.new([7,4], "w", self)
-        @pieces << Bishop.new([7,5], "w", self)
-        @pieces << Knight.new([7,6], "w", self)
-        @pieces << Rook.new([7,7], "w", self)
+        @pieces << Pawn.new([6,0], "White", self)
+        @pieces << Pawn.new([6,1], "White", self)
+        @pieces << Pawn.new([6,2], "White", self)
+        @pieces << Pawn.new([6,3], "White", self)
+        @pieces << Pawn.new([6,4], "White", self)
+        @pieces << Pawn.new([6,5], "White", self)
+        @pieces << Pawn.new([6,6], "White", self)
+        @pieces << Pawn.new([6,7], "White", self)
+        @pieces << Rook.new([7,0], "White", self)
+        @pieces << Knight.new([7,1], "White", self)
+        @pieces << Bishop.new([7,2], "White", self)
+        @pieces << King.new([7,3], "White", self)
+        @pieces << Queen.new([7,4], "White", self)
+        @pieces << Bishop.new([7,5], "White", self)
+        @pieces << Knight.new([7,6], "White", self)
+        @pieces << Rook.new([7,7], "White", self)
+
+        #test pieces go here
+        @pieces << Rook.new([5,2], "Black", self)
     end
 
     def setup_board
@@ -83,7 +96,7 @@ class Game
         @pieces.each do |piece|
             x = piece.position[0]
             y = piece.position[1]
-            z = piece.player == "b" ? piece.black_symbol : piece.white_symbol
+            z = piece.player == "Black" ? piece.black_symbol : piece.white_symbol
             @spaces[x][y] = z
         end
     end 
@@ -132,15 +145,21 @@ class Game
             piece = select_piece(choice)
         end
 
+        piece.select
+
         until destination
             show_board
             puts "Where would you like to move the #{piece.name} (A1 - H8)"
             destination = validate_coords(gets.chomp)
             # destination = piece.valid_move?(destination)
         end
-        piece.move(destination)
-        puts "moved #{piece.name} to #{destination}"
-        puts "now piece location is #{piece.position}"
+
+
+
+        opponent = piece.move(destination)
+        opponent.remove if opponent
+
+
         @selected = nil
         setup_board
         show_board
@@ -165,16 +184,6 @@ class Game
         return false if coords.include?(nil)
         coords
 
-    end
-    
-    def select_piece(coords)
-        @pieces.each do |piece|
-            if piece.position == coords && piece.player == @current_player[0].downcase
-                @selected = piece.position
-                return piece
-            end
-        end
-        nil
     end
 
     def remove_piece
