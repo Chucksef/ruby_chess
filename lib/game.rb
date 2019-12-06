@@ -11,15 +11,16 @@ class Game
     attr_accessor :pieces, :selected
 
     def initialize
+        @status
         @checkmate = false
         @selected = nil
-        @current_player = "White"
+        @current_player = "Black"
         setup_initial_pieces
         setup_board
     end
     
     def play
-        # welcome_message
+        # main_menu
         show_board
         until @checkmate
             take_turn
@@ -37,7 +38,7 @@ class Game
     
     private
 
-    def welcome_message
+    def main_menu
         system "clear"
         puts "Welcome to Chess, or Whatever."
         puts ""
@@ -47,42 +48,51 @@ class Game
     
     def setup_initial_pieces
         @pieces = []
-        @pieces << Rook.new([0,0], "Black", self)
-        @pieces << Knight.new([0,1], "Black", self)
-        @pieces << Bishop.new([0,2], "Black", self)
-        @pieces << Queen.new([0,3], "Black", self)
-        @pieces << King.new([0,4], "Black", self)
-        @pieces << Bishop.new([0,5], "Black", self)
-        @pieces << Knight.new([0,6], "Black", self)
-        @pieces << Rook.new([0,7], "Black", self)
-        @pieces << Pawn.new([1,0], "Black", self)
-        @pieces << Pawn.new([1,1], "Black", self)
-        @pieces << Pawn.new([1,2], "Black", self)
-        @pieces << Pawn.new([1,3], "Black", self)
-        @pieces << Pawn.new([1,4], "Black", self)
-        @pieces << Pawn.new([1,5], "Black", self)
-        @pieces << Pawn.new([1,6], "Black", self)
-        @pieces << Pawn.new([1,7], "Black", self)
 
-        # @pieces << Pawn.new([6,0], "White", self)
-        @pieces << Pawn.new([6,1], "White", self)
-        @pieces << Pawn.new([6,2], "White", self)
-        # @pieces << Pawn.new([6,3], "White", self)
-        @pieces << Pawn.new([6,4], "White", self)
-        @pieces << Pawn.new([6,5], "White", self)
-        @pieces << Pawn.new([6,6], "White", self)
-        @pieces << Pawn.new([6,7], "White", self)
-        @pieces << Rook.new([7,0], "White", self)
-        @pieces << Knight.new([7,1], "White", self)
-        @pieces << Bishop.new([7,2], "White", self)
-        @pieces << King.new([7,3], "White", self)
-        @pieces << Queen.new([7,4], "White", self)
-        @pieces << Bishop.new([7,5], "White", self)
-        @pieces << Knight.new([7,6], "White", self)
-        @pieces << Rook.new([7,7], "White", self)
+        loaded = false # <-- temporarily set loaded to false until I build in functionality to load games
+        
+        unless loaded
+            #default piece placement
 
-        #test pieces go here
-        @pieces << Rook.new([5,2], "Black", self)
+            #Black pieces
+            @pieces << Rook.new([0,0], "Black", self)
+            @pieces << Knight.new([0,1], "Black", self)
+            @pieces << Bishop.new([0,2], "Black", self)
+            @pieces << Queen.new([0,3], "Black", self)
+            @pieces << King.new([0,4], "Black", self)
+            @pieces << Bishop.new([0,5], "Black", self)
+            @pieces << Knight.new([0,6], "Black", self)
+            @pieces << Rook.new([0,7], "Black", self)
+            @pieces << Pawn.new([1,0], "Black", self)
+            @pieces << Pawn.new([1,1], "Black", self)
+            @pieces << Pawn.new([1,2], "Black", self)
+            @pieces << Pawn.new([1,3], "Black", self)
+            @pieces << Pawn.new([1,4], "Black", self)
+            @pieces << Pawn.new([1,5], "Black", self)
+            @pieces << Pawn.new([1,6], "Black", self)
+            @pieces << Pawn.new([1,7], "Black", self)
+    
+            #White pieces
+            @pieces << Pawn.new([6,0], "White", self)
+            @pieces << Pawn.new([6,1], "White", self)
+            @pieces << Pawn.new([6,2], "White", self)
+            @pieces << Pawn.new([6,3], "White", self)
+            @pieces << Pawn.new([6,4], "White", self)
+            @pieces << Pawn.new([6,5], "White", self)
+            @pieces << Pawn.new([6,6], "White", self)
+            @pieces << Pawn.new([6,7], "White", self)
+            @pieces << Rook.new([7,0], "White", self)
+            @pieces << Knight.new([7,1], "White", self)
+            @pieces << Bishop.new([7,2], "White", self)
+            @pieces << King.new([7,3], "White", self)
+            @pieces << Queen.new([7,4], "White", self)
+            @pieces << Bishop.new([7,5], "White", self)
+            @pieces << Knight.new([7,6], "White", self)
+            @pieces << Rook.new([7,7], "White", self)
+            
+            #test pieces go here
+
+        end
     end
 
     def setup_board
@@ -132,25 +142,47 @@ class Game
     end
     
     def take_turn
-        #Ask user to select piece
+        
+        if @status == "INVALID MOVE"
+            #load save_state
+            @status = "Invalid Move: Cannot put yourself into CHECK"
+        elsif @status == "BACK"
+            @status = nil
+        else
+            @current_player = @current_player == "White" ? "Black" : "White"
+        end
+
+        
+        # save_state before move in case of invalid move (check inducing)
+        @selected = nil
         choice = nil
         piece = nil
         destination = nil
 
         until piece.is_a?(Piece)
             show_board
+            puts "#{@status}\n\n" if @status != nil
             puts "#{@current_player}: Choose a Piece (A1 - H8)\n\n"
             puts "#{choice}\n\n" if choice.is_a?(String)
             choice = validate_coords(gets.chomp)
             piece = get_piece(choice)
+            if piece.is_a?(Piece)
+                piece = nil if piece.player != @current_player
+            end
         end
 
         piece.select
 
         until destination
             show_board
+            puts "#{@status}\n\n" if @status != nil
             puts "Where would you like to move the #{piece.name} (A1 - H8)\n\n"
-            destination = validate_coords(gets.chomp)
+            destination = gets.chomp
+            if destination.upcase == "BACK"
+                @status = "BACK"
+                return 
+            end
+            destination = validate_coords(destination)
             destination = nil unless piece.moves.include?(destination)
         end
 
@@ -162,6 +194,31 @@ class Game
         show_board
 
         #Check for Checkmate
+        @status = get_checkmate
+
+
+
+
+        #if check or checkmate against @current_player, reset and retake turn
+        #if checkmate against opponent, @current_player wins
+        #if no checkmate, switch @current_player
+    end
+
+    def get_checkmate
+        check = false
+        @pieces.each do |piece|
+            owner = piece.player
+            piece.select # this will force each piece to update its valid moves array
+            piece.moves.each do |move|
+                target = get_piece(move)
+                next if target == nil
+                if target.name == "KING"
+                    return "INVALID MOVE" if @current_player == target.player
+                    check = true if @current_player != target.player
+                end
+            end
+        end
+        return "CHECK" if check == true
     end
 
     def validate_coords(string)
