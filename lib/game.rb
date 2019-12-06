@@ -146,6 +146,8 @@ class Game
         if @status == "INVALID MOVE"
             #load save_state
             @status = "Invalid Move: Cannot put yourself into CHECK"
+        elsif @status == "BACK"
+            @status = nil
         else
             @current_player = @current_player == "White" ? "Black" : "White"
         end
@@ -172,7 +174,12 @@ class Game
             show_board
             puts "#{@status}\n\n" if @status != nil
             puts "Where would you like to move the #{piece.name} (A1 - H8)\n\n"
-            destination = validate_coords(gets.chomp)
+            destination = gets.chomp
+            if destination.upcase == "BACK"
+                @status = "BACK"
+                return 
+            end
+            destination = validate_coords(destination)
             destination = nil unless piece.moves.include?(destination)
         end
 
