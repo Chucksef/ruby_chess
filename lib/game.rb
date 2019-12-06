@@ -14,7 +14,7 @@ class Game
         @status
         @checkmate = false
         @selected = nil
-        @current_player = "White"
+        @current_player = "Black"
         setup_initial_pieces
         setup_board
     end
@@ -142,7 +142,16 @@ class Game
     end
     
     def take_turn
-        # save state before move
+        
+        if @status == "INVALID MOVE"
+            #load save_state
+            @status = "Invalid Move: Cannot put yourself into CHECK"
+        else
+            @current_player = @current_player == "White" ? "Black" : "White"
+        end
+
+        
+        # save_state before move in case of invalid move (check inducing)
         @selected = nil
         choice = nil
         piece = nil
@@ -194,12 +203,12 @@ class Game
                 target = get_piece(move)
                 next if target == nil
                 if target.name == "KING"
-                    return "invalid move" if @current_player == target.player
+                    return "INVALID MOVE" if @current_player == target.player
                     check = true if @current_player != target.player
                 end
             end
         end
-        return "check" if check == true
+        return "CHECK" if check == true
     end
 
     def validate_coords(string)
