@@ -11,6 +11,7 @@ class Game
     attr_accessor :pieces, :selected
 
     def initialize
+        @status
         @checkmate = false
         @selected = nil
         @current_player = "White"
@@ -47,6 +48,8 @@ class Game
     
     def setup_initial_pieces
         @pieces = []
+
+        loaded = false # <-- temporarily set loaded to false until I build in functionality to load games
         
         unless loaded
             #default piece placement
@@ -140,13 +143,14 @@ class Game
     
     def take_turn
         # save state before move
-
+        @selected = nil
         choice = nil
         piece = nil
         destination = nil
 
         until piece.is_a?(Piece)
             show_board
+            puts "#{@status}\n\n" if @status != nil
             puts "#{@current_player}: Choose a Piece (A1 - H8)\n\n"
             puts "#{choice}\n\n" if choice.is_a?(String)
             choice = validate_coords(gets.chomp)
@@ -157,6 +161,7 @@ class Game
 
         until destination
             show_board
+            puts "#{@status}\n\n" if @status != nil
             puts "Where would you like to move the #{piece.name} (A1 - H8)\n\n"
             destination = validate_coords(gets.chomp)
             destination = nil unless piece.moves.include?(destination)
@@ -170,10 +175,31 @@ class Game
         show_board
 
         #Check for Checkmate
+        @status = get_checkmate
 
-        #if checkmate against @player, reset and retake turn
-        #if checkmate against opponent, @player wins
+
+
+
+        #if check or checkmate against @current_player, reset and retake turn
+        #if checkmate against opponent, @current_player wins
         #if no checkmate, switch @current_player
+    end
+
+    def get_checkmate
+        check = false
+        @pieces.each do |piece|
+            owner = piece.player
+            piece.select # this will force each piece to update its valid moves array
+            piece.moves.each do |move|
+                target = get_piece(move)
+                next if target == nil
+                if target.name == "KING"
+                    return "invalid move" if @current_player == target.player
+                    check = true if @current_player != target.player
+                end
+            end
+        end
+        return "check" if check == true
     end
 
     def validate_coords(string)
