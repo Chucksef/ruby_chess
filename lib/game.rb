@@ -163,8 +163,7 @@ class Game
             puts "#{@current_player}: Choose a Piece (A1 - H8)\n\n"
             puts "#{choice}\n\n" if choice.is_a?(String)
             choice = validate_coords(gets.chomp)
-            piece = get_piece(choice) 
-            piece = nil if piece.player != @current_player
+            piece = get_piece(choice) if get_piece(choice).player == @current_player
         end
 
         piece.select
