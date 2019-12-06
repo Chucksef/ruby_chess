@@ -158,9 +158,8 @@ class Game
             @status = @current_player == "White" ? "BLACK'S TURN" : "WHITE'S TURN"
             @current_player = @current_player == "White" ? "Black" : "White"
         end
-
         
-        # save_state before move in case of invalid move (check inducing)
+        # <<<<<<<< save_state before move in case of invalid move (check inducing)
         @selected = nil
         choice = nil
         piece = nil
@@ -172,6 +171,18 @@ class Game
             puts "#{choice}\n\n" if choice.is_a?(String)
 
             # look for keywords to bring up menu, save, or quit
+            if destination.upcase == "LOAD"
+                @status = "LOAD"
+                # <<<<<<<< call special load function here
+                return 
+            elsif destination.upcase == "SAVE"
+                @status = "SAVE"
+                # <<<<<<<< call special save function here
+            elsif destination.upcase == "QUIT"
+                @status = "QUIT"
+                # <<<<<<<< call special quit function here
+            end
+            
             choice = validate_coords(gets.chomp)
             piece = get_piece(choice)
             if piece.is_a?(Piece)
@@ -203,13 +214,6 @@ class Game
 
         #Check for Checkmate
         @status = get_checkmate
-
-
-
-
-        #if check or checkmate against @current_player, reset and retake turn
-        #if checkmate against opponent, @current_player wins
-        #if no checkmate, switch @current_player
     end
 
     def get_checkmate
