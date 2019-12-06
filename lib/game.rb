@@ -11,8 +11,7 @@ class Game
     attr_accessor :pieces, :selected
 
     def initialize
-        @status
-        @checkmate = false
+        @status = "WHITE'S TURN"
         @selected = nil
         @current_player = "Black"
         setup_initial_pieces
@@ -22,7 +21,7 @@ class Game
     def play
         # main_menu
         show_board
-        until @checkmate
+        until @status == "CHECKMATE"
             take_turn
         end
     end
@@ -138,7 +137,14 @@ class Game
             lines.each {|l| puts l}
             row += 1
         end
-        3.times {puts ""}
+
+        puts "\n           COMMANDS:  LOAD  SAVE  QUIT"
+
+        stat_len = 24-(@status.length/2)
+        stat_line = ""
+        stat_len.times { stat_line += " " }
+
+        puts "\n#{stat_line}#{@status}\n\n"
     end
     
     def take_turn
@@ -147,8 +153,9 @@ class Game
             #load save_state
             @status = "Invalid Move: Cannot put yourself into CHECK"
         elsif @status == "BACK"
-            @status = nil
+            @status = "SELECT ANOTHER PIECE"
         else
+            @status = @current_player == "White" ? "BLACK'S TURN" : "WHITE'S TURN"
             @current_player = @current_player == "White" ? "Black" : "White"
         end
 
@@ -161,9 +168,10 @@ class Game
 
         until piece.is_a?(Piece)
             show_board
-            puts "#{@status}\n\n" if @status != nil
             puts "#{@current_player}: Choose a Piece (A1 - H8)\n\n"
             puts "#{choice}\n\n" if choice.is_a?(String)
+
+            # look for keywords to bring up menu, save, or quit
             choice = validate_coords(gets.chomp)
             piece = get_piece(choice)
             if piece.is_a?(Piece)
@@ -175,8 +183,8 @@ class Game
 
         until destination
             show_board
-            puts "#{@status}\n\n" if @status != nil
             puts "Where would you like to move the #{piece.name} (A1 - H8)\n\n"
+            puts "Or type 'BACK' to select another piece\n\n"
             destination = gets.chomp
             if destination.upcase == "BACK"
                 @status = "BACK"
