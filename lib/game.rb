@@ -168,22 +168,22 @@ class Game
         until piece.is_a?(Piece)
             show_board
             puts "#{@current_player}: Choose a Piece (A1 - H8)\n\n"
-            puts "#{choice}\n\n" if choice.is_a?(String)
+            choice = gets.chomp
 
             # look for keywords to bring up menu, save, or quit
-            if destination.upcase == "LOAD"
+            if choice.upcase == "LOAD"
                 @status = "LOAD"
                 # <<<<<<<< call special load function here
                 return 
-            elsif destination.upcase == "SAVE"
+            elsif choice.upcase == "SAVE"
                 @status = "SAVE"
                 # <<<<<<<< call special save function here
-            elsif destination.upcase == "QUIT"
+            elsif choice.upcase == "QUIT"
                 @status = "QUIT"
                 # <<<<<<<< call special quit function here
             end
             
-            choice = validate_coords(gets.chomp)
+            choice = validate_coords(choice)
             piece = get_piece(choice)
             if piece.is_a?(Piece)
                 piece = nil if piece.player != @current_player
