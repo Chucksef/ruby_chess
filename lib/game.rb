@@ -11,12 +11,12 @@ require "./lib/pieces/knight"
 class Game
     attr_accessor :pieces, :selected
 
-    def initialize
+    def initialize(state = [])
         @save_state
         @status = "WHITE'S TURN"
         @selected = nil
         @current_player = "Black"
-        setup_pieces
+        setup_pieces(state)
         setup_board
     end
     
@@ -47,10 +47,10 @@ class Game
         gets
     end
     
-    def setup_pieces(all_pieces = [])
+    def setup_pieces(state_pieces = [])
         @pieces = []
         
-        unless all_pieces.length > 0
+        if state_pieces.length == 0
             #default piece placement
 
             #Black pieces
@@ -92,8 +92,8 @@ class Game
             #test pieces go here
 
         else
-            #iterate over all_pieces, since it has pieces in it.
-            @pieces = all_pieces
+            #iterate over state_pieces, since it has pieces in it.
+            @pieces = state_pieces
 
         end
     end
@@ -152,6 +152,7 @@ class Game
     end
     
     def take_turn
+        
         if @status == "INVALID MOVE"
 
             #load state from @save_state then reset it to "")
@@ -165,6 +166,10 @@ class Game
             @status = "GAME SAVED"
         elsif @status == "LOAD"
             @status = "GAME LOADED"
+        elsif @status == "CHECK"
+            @save_state = to_json()
+            @status = @current_player == "White" ? "BLACK'S TURN -- CHECK!" : "WHITE'S TURN -- CHECK!"
+            @current_player = @current_player == "White" ? "Black" : "White"
         else
             @save_state = to_json()
             @status = @current_player == "White" ? "BLACK'S TURN" : "WHITE'S TURN"
@@ -226,7 +231,7 @@ class Game
         show_board
 
         #Check for Checkmate
-        @status = get_checkmate
+        @status = get_check
     end
  
     def to_json
@@ -290,7 +295,7 @@ class Game
         from_json(File.read(file_name))
     end
 
-    def get_checkmate
+    def get_check
         check = false
         @pieces.each do |piece|
             owner = piece.player
@@ -305,6 +310,10 @@ class Game
             end
         end
         return "CHECK" if check == true
+    end
+
+    def checkmate?
+
     end
 
     def validate_coords(string)
