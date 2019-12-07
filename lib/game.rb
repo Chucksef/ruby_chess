@@ -185,9 +185,9 @@ class Game
             elsif choice.upcase == "SAVE"
                 @status = "SAVE"
                 save(to_json)
-            elsif choice.upcase == "QUIT"
-                @status = "QUIT"
-                # <<<<<<<< call special quit function here
+            elsif choice.upcase == "QUIT" || choice.upcase == "EXIT" || choice.upcase == "CLOSE"
+                system "clear"
+                exit
             end
             
             choice = validate_coords(choice)
