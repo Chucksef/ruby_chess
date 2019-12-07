@@ -1,3 +1,4 @@
+require 'json'
 require "./lib/piece"
 require "./lib/square"
 require "./lib/pieces/rook"
@@ -14,7 +15,7 @@ class Game
         @status = "WHITE'S TURN"
         @selected = nil
         @current_player = "Black"
-        setup_initial_pieces
+        setup_pieces
         setup_board
     end
     
@@ -45,12 +46,10 @@ class Game
         gets
     end
     
-    def setup_initial_pieces
+    def setup_pieces(all_pieces = [])
         @pieces = []
-
-        loaded = false # <-- temporarily set loaded to false until I build in functionality to load games
         
-        unless loaded
+        unless all_pieces.length > 0
             #default piece placement
 
             #Black pieces
@@ -90,6 +89,10 @@ class Game
             @pieces << Rook.new([7,7], "White", self)
             
             #test pieces go here
+
+        else
+            #iterate over all_pieces, since it has pieces in it.
+            @pieces = all_pieces
 
         end
     end
@@ -148,13 +151,17 @@ class Game
     end
     
     def take_turn
-        
         if @status == "INVALID MOVE"
             #load save_state
             @status = "Invalid Move: Cannot put yourself into CHECK"
         elsif @status == "BACK"
             @status = "SELECT ANOTHER PIECE"
+        elsif @status == "SAVE"
+            @status = "GAME SAVED"
+        elsif @status == "LOAD"
+            @status = "GAME LOADED"
         else
+            #if it's none of the above, toggle player and proceed
             @status = @current_player == "White" ? "BLACK'S TURN" : "WHITE'S TURN"
             @current_player = @current_player == "White" ? "Black" : "White"
         end
@@ -173,11 +180,11 @@ class Game
             # look for keywords to bring up menu, save, or quit
             if choice.upcase == "LOAD"
                 @status = "LOAD"
-                # <<<<<<<< call special load function here
+                load
                 return 
             elsif choice.upcase == "SAVE"
                 @status = "SAVE"
-                # <<<<<<<< call special save function here
+                save(to_json)
             elsif choice.upcase == "QUIT"
                 @status = "QUIT"
                 # <<<<<<<< call special quit function here
@@ -215,6 +222,67 @@ class Game
         #Check for Checkmate
         @status = get_checkmate
     end
+ 
+    def to_json
+        pieces_str = []
+
+        @pieces.each do |piece|
+            piece_str = JSON.dump ({
+                :name => piece.name,
+                :position => piece.position,
+                :player => piece.player
+            })
+            pieces_str << piece_str
+        end
+        JSON.dump ({
+            :current_player => @current_player,
+            :pieces => pieces_str
+        })
+    end
+
+    def save(data)
+        Dir.mkdir("save") unless Dir.exist?("save")
+        puts "Please name your save file"
+        filename = "save/#{gets.chomp}.json"
+        File.open(filename, 'w') { |file| file.write(data) }
+        print "File has been saved. Press ENTER to continue"
+        gets
+    end
+
+    def from_json(str)
+        new_pieces = []
+        data = JSON.load str
+        @current_player = data['current_player']
+        data['pieces'].each do |piece|
+            piece_str = JSON.load piece
+            case piece_str['name']
+            when "PAWN"
+                new_pieces << Pawn.new(piece_str['position'], piece_str['player'], self)
+            when "ROOK"
+                new_pieces << Rook.new(piece_str['position'], piece_str['player'], self)
+            when "KNIGHT"
+                new_pieces << Knight.new(piece_str['position'], piece_str['player'], self)
+            when "BISHOP"
+                new_pieces << Bishop.new(piece_str['position'], piece_str['player'], self)
+            when "QUEEN"
+                new_pieces << Queen.new(piece_str['position'], piece_str['player'], self)
+            when "KING"
+                new_pieces << King.new(piece_str['position'], piece_str['player'], self)
+            end
+        end
+        setup_pieces(new_pieces)
+        setup_board
+    end
+
+    def load
+        game_saves = Dir.entries('save').reject { |f| File.directory?(f) }.join("\n")
+        puts 'Enter the game save name that you want to load from', "\nHere are all game saves\n"
+        puts game_saves
+        file_name = "save/#{gets.chomp}"
+        puts 'Game save does not exist' unless File.exist?(file_name)
+        exit unless File.exist?(file_name)
+        from_json(File.read(file_name))
+    end
 
     def get_checkmate
         check = false
@@ -249,10 +317,6 @@ class Game
         
         return false if coords.include?(nil)
         coords
-
-    end
-
-    def remove_piece
 
     end
 
