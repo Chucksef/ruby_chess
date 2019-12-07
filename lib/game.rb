@@ -12,6 +12,7 @@ class Game
     attr_accessor :pieces, :selected
 
     def initialize
+        @save_state
         @status = "WHITE'S TURN"
         @selected = nil
         @current_player = "Black"
@@ -152,7 +153,11 @@ class Game
     
     def take_turn
         if @status == "INVALID MOVE"
-            #load save_state
+
+            #load state from @save_state then reset it to "")
+            from_json(@save_state)
+            @save_state = ""
+
             @status = "Invalid Move: Cannot put yourself into CHECK"
         elsif @status == "BACK"
             @status = "SELECT ANOTHER PIECE"
@@ -161,12 +166,13 @@ class Game
         elsif @status == "LOAD"
             @status = "GAME LOADED"
         else
-            #if it's none of the above, toggle player and proceed
+            @save_state = to_json()
             @status = @current_player == "White" ? "BLACK'S TURN" : "WHITE'S TURN"
             @current_player = @current_player == "White" ? "Black" : "White"
         end
         
-        # <<<<<<<< save_state before move in case of invalid move (check inducing)
+        @save_state = to_json #save state in case of invalid move
+
         @selected = nil
         choice = nil
         piece = nil
