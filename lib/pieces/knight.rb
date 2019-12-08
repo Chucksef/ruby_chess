@@ -10,6 +10,7 @@ class Knight < Piece
         @white_symbol = "♞"
         @black_symbol = "♘"
         @rel_moves = [[1,2], [2,1], [2,-1], [1,-2], [-1, -2], [-2, -1], [-2, 1], [-1, 2]]
+        @moved = false
     end
 
     def get_legal_moves

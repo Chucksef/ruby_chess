@@ -10,6 +10,7 @@ class Queen < Piece
         @white_symbol = "♛"
         @black_symbol = "♕"
         @rel_moves = []
+        @moved = false
     end
 
     def get_legal_moves

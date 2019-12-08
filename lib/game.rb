@@ -55,12 +55,12 @@ class Game
 
             #Black pieces
             @pieces << Rook.new([0,0], "Black", self)
-            @pieces << Knight.new([0,1], "Black", self)
-            @pieces << Bishop.new([0,2], "Black", self)
-            @pieces << Queen.new([0,3], "Black", self)
+            # @pieces << Knight.new([0,1], "Black", self)
+            # @pieces << Bishop.new([0,2], "Black", self)
+            # @pieces << Queen.new([0,3], "Black", self)
             @pieces << King.new([0,4], "Black", self)
-            @pieces << Bishop.new([0,5], "Black", self)
-            @pieces << Knight.new([0,6], "Black", self)
+            # @pieces << Bishop.new([0,5], "Black", self)
+            # @pieces << Knight.new([0,6], "Black", self)
             @pieces << Rook.new([0,7], "Black", self)
             @pieces << Pawn.new([1,0], "Black", self)
             @pieces << Pawn.new([1,1], "Black", self)
@@ -81,12 +81,12 @@ class Game
             @pieces << Pawn.new([6,6], "White", self)
             @pieces << Pawn.new([6,7], "White", self)
             @pieces << Rook.new([7,0], "White", self)
-            @pieces << Knight.new([7,1], "White", self)
-            @pieces << Bishop.new([7,2], "White", self)
+            # @pieces << Knight.new([7,1], "White", self)
+            # @pieces << Bishop.new([7,2], "White", self)
             @pieces << King.new([7,3], "White", self)
-            @pieces << Queen.new([7,4], "White", self)
-            @pieces << Bishop.new([7,5], "White", self)
-            @pieces << Knight.new([7,6], "White", self)
+            # @pieces << Queen.new([7,4], "White", self)
+            # @pieces << Bishop.new([7,5], "White", self)
+            # @pieces << Knight.new([7,6], "White", self)
             @pieces << Rook.new([7,7], "White", self)
             
             #test pieces go here
@@ -167,6 +167,7 @@ class Game
         elsif @status == "LOAD"
             @status = "GAME LOADED"
         elsif @status == "CHECK"
+            checkmate?()
             @save_state = to_json()
             @status = @current_player == "White" ? "BLACK'S TURN -- CHECK!" : "WHITE'S TURN -- CHECK!"
             @current_player = @current_player == "White" ? "Black" : "White"
@@ -223,6 +224,8 @@ class Game
             destination = nil unless piece.moves.include?(destination)
         end
 
+        if piece.name == "KING"
+        end
         opponent = piece.move(destination)
         opponent.remove if opponent
 
@@ -304,6 +307,8 @@ class Game
                 target = get_piece(move)
                 next if target == nil
                 if target.name == "KING"
+                    puts "The #{piece.name} at #{piece.position} can take the #{target.player} King!"
+                    gets
                     return "INVALID MOVE" if @current_player == target.player
                     check = true if @current_player != target.player
                 end
@@ -313,7 +318,7 @@ class Game
     end
 
     def checkmate?
-
+        
     end
 
     def validate_coords(string)

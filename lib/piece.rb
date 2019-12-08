@@ -1,5 +1,5 @@
 class Piece
-    attr_accessor :name, :player, :position, :moves, :white_symbol, :black_symbol
+    attr_accessor :name, :player, :position, :moves, :moved, :white_symbol, :black_symbol
     
     def select
         # return nil if @game.current_player != @player

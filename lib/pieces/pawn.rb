@@ -5,12 +5,12 @@ class Pawn < Piece
     def initialize(pos, player, game)
         @game = game
         @name = "PAWN"
-        @moved = false
         @position = pos
         @player = player
         @white_symbol = "♟"
         @black_symbol = "♙"
         @rel_moves = [[1,0], [-1,0]]
+        @moved = false
     end
 
     def get_legal_moves
