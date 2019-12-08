@@ -55,12 +55,12 @@ class Game
 
             #Black pieces
             @pieces << Rook.new([0,0], "Black", self)
-            # @pieces << Knight.new([0,1], "Black", self)
-            # @pieces << Bishop.new([0,2], "Black", self)
-            # @pieces << Queen.new([0,3], "Black", self)
+            @pieces << Knight.new([0,1], "Black", self)
+            @pieces << Bishop.new([0,2], "Black", self)
+            @pieces << Queen.new([0,3], "Black", self)
             @pieces << King.new([0,4], "Black", self)
-            # @pieces << Bishop.new([0,5], "Black", self)
-            # @pieces << Knight.new([0,6], "Black", self)
+            @pieces << Bishop.new([0,5], "Black", self)
+            @pieces << Knight.new([0,6], "Black", self)
             @pieces << Rook.new([0,7], "Black", self)
             @pieces << Pawn.new([1,0], "Black", self)
             @pieces << Pawn.new([1,1], "Black", self)
@@ -81,12 +81,12 @@ class Game
             @pieces << Pawn.new([6,6], "White", self)
             @pieces << Pawn.new([6,7], "White", self)
             @pieces << Rook.new([7,0], "White", self)
-            # @pieces << Knight.new([7,1], "White", self)
-            # @pieces << Bishop.new([7,2], "White", self)
+            @pieces << Knight.new([7,1], "White", self)
+            @pieces << Bishop.new([7,2], "White", self)
             @pieces << King.new([7,3], "White", self)
-            # @pieces << Queen.new([7,4], "White", self)
-            # @pieces << Bishop.new([7,5], "White", self)
-            # @pieces << Knight.new([7,6], "White", self)
+            @pieces << Queen.new([7,4], "White", self)
+            @pieces << Bishop.new([7,5], "White", self)
+            @pieces << Knight.new([7,6], "White", self)
             @pieces << Rook.new([7,7], "White", self)
             
             #test pieces go here
@@ -318,6 +318,14 @@ class Game
     end
 
     def checkmate?
+        #get king that put game into check
+        #get opponent that put king into check
+        
+        #see if moving the king would resolve check                             <--- if so, no checkmate
+        #see if capturing opponent would resolve check
+            #if it would, can any piece take opponent                           <--- if so, no checkmate
+        #see if putting a new piece in any blank space would resolve check
+            #if yes, can any piece move there?                                  <--- if so, no checkmate
         
     end
 
