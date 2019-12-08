@@ -9,6 +9,17 @@ class Piece
     end
 
     def move(destination)
+        #determine if piece is castelling
+        displacement = (destination[1] - @position[1])
+        dir = displacement > 0 ? 7 : 0
+        castelling = @name == "KING" && displacement.abs > 1
+        #if casteling, get correct rook based on direction and position
+        if castelling
+            rook = @game.get_piece([@position[0], dir])
+            rook.move([@position[0], 5]) if dir > 1
+            rook.move([@position[0], 2]) if dir < 1
+        end
+
         opponent = @game.get_piece(destination)        
         @position = destination
         @moved = true
