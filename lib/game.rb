@@ -11,12 +11,12 @@ require "./lib/pieces/knight"
 class Game
     attr_accessor :pieces, :selected
 
-    def initialize(state = [])
+    def initialize(state_pieces = [])
         @save_state
         @status = "WHITE'S TURN"
         @selected = nil
         @current_player = "Black"
-        setup_pieces(state)
+        setup_pieces(state_pieces)
         setup_board
     end
     
@@ -36,8 +36,6 @@ class Game
         end
         nil
     end
-    
-    private
 
     def main_menu
         system "clear"
@@ -234,7 +232,8 @@ class Game
 
         #Check for Checkmate
         check_status = get_check()
-        @status = check_status[0] == "CHECK" ? checkmate?() : check_status[0]
+
+        @status = check_status[0] == "CHECK" ? checkmate?(check_status[1], check_status[2]) : check_status[0] if check_status
         
     end
  
@@ -318,15 +317,21 @@ class Game
                 end
             end
         end
-        return ["CHECK", king, kingslayer]
+        return ["CHECK", king, kingslayer] if kingslayer
     end
 
-    def checkmate?
-        "CHECK"
-        #get king that put game into check
-        #get opponent that put king into check
+    def checkmate?(king, kingslayer)
         
         #see if moving the king would resolve check                             <--- if so, no checkmate
+        temp_save = to_json
+        king.moves.each do |possible_move|
+            new_game = Game.new()
+            new_game.from_json(temp_save)
+            new_king = new_game.get_piece(king.position)
+            new_king.move(possible_move)
+            new_check_status = new_game.get_check
+            return "CHECK" unless new_check_status
+        end
         #see if capturing opponent would resolve check
             #if it would, can any piece take opponent                           <--- if so, no checkmate
         #see if putting a new piece in any blank space would resolve check
