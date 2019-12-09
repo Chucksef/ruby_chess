@@ -159,7 +159,7 @@ class Game
             from_json(@save_state)
             @save_state = ""
 
-            @status = "Invalid Move: Cannot put yourself into CHECK"
+            @status = "Invalid Move -- CHECK!"
         elsif @status == "BACK"
             @status = "SELECT ANOTHER PIECE"
         elsif @status == "SAVE"
@@ -167,7 +167,6 @@ class Game
         elsif @status == "LOAD"
             @status = "GAME LOADED"
         elsif @status == "CHECK"
-            checkmate?()
             @save_state = to_json()
             @status = @current_player == "White" ? "BLACK'S TURN -- CHECK!" : "WHITE'S TURN -- CHECK!"
             @current_player = @current_player == "White" ? "Black" : "White"
@@ -234,7 +233,9 @@ class Game
         show_board
 
         #Check for Checkmate
-        @status = get_check
+        check_status = get_check()
+        @status = check_status[0] == "CHECK" ? checkmate?() : check_status[0]
+        
     end
  
     def to_json
@@ -299,25 +300,29 @@ class Game
     end
 
     def get_check
-        check = false
+        king = nil
+        kingslayer = nil
         @pieces.each do |piece|
             owner = piece.player
-            piece.select # this will force each piece to update its valid moves array
+            piece.select        # this will force each piece to update its valid moves array
             piece.moves.each do |move|
                 target = get_piece(move)
-                next if target == nil
+                next if target == nil   # skip this element if it's empty
                 if target.name == "KING"
-                    puts "The #{piece.name} at #{piece.position} can take the #{target.player} King!"
-                    gets
-                    return "INVALID MOVE" if @current_player == target.player
-                    check = true if @current_player != target.player
+                    if @current_player == target.player
+                        return ["INVALID MOVE", target, piece]
+                    else
+                        king = target
+                        kingslayer = piece
+                    end
                 end
             end
         end
-        return "CHECK" if check == true
+        return ["CHECK", king, kingslayer]
     end
 
     def checkmate?
+        "CHECK"
         #get king that put game into check
         #get opponent that put king into check
         
