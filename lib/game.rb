@@ -168,6 +168,9 @@ class Game
             @save_state = to_json()
             @status = @current_player == "White" ? "BLACK'S TURN -- CHECK!" : "WHITE'S TURN -- CHECK!"
             @current_player = @current_player == "White" ? "Black" : "White"
+        elsif @status == "CHECKMATE"
+            p "CHECKMATE RETURNED!!"
+            gets
         else
             @save_state = to_json()
             @status = @current_player == "White" ? "BLACK'S TURN" : "WHITE'S TURN"
@@ -233,8 +236,9 @@ class Game
         #Check for Checkmate
         check_status = get_check()
 
-        @status = check_status[0] == "CHECK" ? checkmate?(check_status[1], check_status[2]) : check_status[0] if check_status
-        
+        puts "checking for checkmate"
+        p @status = check_status[0] == "CHECK" ? checkmate?(check_status[1], check_status[2]) : check_status[0] if check_status
+        gets if @status == "CHECKMATE"
     end
  
     def to_json
@@ -332,11 +336,51 @@ class Game
             new_check_status = new_game.get_check
             return "CHECK" unless new_check_status
         end
-        #see if capturing opponent would resolve check
-            #if it would, can any piece take opponent                           <--- if so, no checkmate
-        #see if putting a new piece in any blank space would resolve check
+
+        #see if capturing kingslayer would resolve check
+        new_game = Game.new()
+        new_game.from_json(temp_save)
+        new_slayer = new_game.get_piece(kingslayer.position)
+        new_slayer.remove
+        new_check_status = new_game.get_check
+        resolvable = new_check_status ? false : true
+
+        #if it would, can any piece take opponent                           <--- if so, no checkmate
+        player_pieces = @pieces.select { |piece| piece.player != @current_player }
+
+        player_pieces.each do |potential_savior|
+            return "CHECK" if potential_savior.moves.include?(kingslayer.position)
+        end
+            
+        #get all blank spaces
+        blank_spaces = []
+        (0..7).to_a.each do |row|
+            (0..7).to_a.each do |col|
+                blank_spaces << [row, col] if get_piece([row, col]) == nil
+            end
+        end
+
+        #put a pawn in each blank space and see if there's check
+        resolvable = false
+        blank_spaces.each do |blank|
+            new_game = Game.new()
+            new_game.from_json(temp_save)
+            new_game.pieces << Pawn.new(blank, "White", new_game)
+            new_check_status = new_game.get_check
+
             #if yes, can any piece move there?                                  <--- if so, no checkmate
+            unless new_check_status
+                player_pieces.each do |piece|
+                    if piece.moves.include?(blank)
+                        puts "#{piece.name} can get in the way by moving from #{piece.position} to #{blank}"
+                        gets
+                        return "CHECK" unless piece.name == "KING"
+                    end
+                end
+            end
+        end
         
+        "CHECKMATE"
     end
 
     def validate_coords(string)
