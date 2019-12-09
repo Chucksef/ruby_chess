@@ -26,6 +26,9 @@ class Game
         until @status == "CHECKMATE"
             take_turn
         end
+        @selected = nil
+        show_board
+        puts "                   #{@current_player.upcase} WINS!\n\n\n"
     end
 
     def get_piece(coords)
@@ -168,9 +171,6 @@ class Game
             @save_state = to_json()
             @status = @current_player == "White" ? "BLACK'S TURN -- CHECK!" : "WHITE'S TURN -- CHECK!"
             @current_player = @current_player == "White" ? "Black" : "White"
-        elsif @status == "CHECKMATE"
-            p "CHECKMATE RETURNED!!"
-            gets
         else
             @save_state = to_json()
             @status = @current_player == "White" ? "BLACK'S TURN" : "WHITE'S TURN"
@@ -236,9 +236,7 @@ class Game
         #Check for Checkmate
         check_status = get_check()
 
-        puts "checking for checkmate"
-        p @status = check_status[0] == "CHECK" ? checkmate?(check_status[1], check_status[2]) : check_status[0] if check_status
-        gets if @status == "CHECKMATE"
+        @status = check_status[0] == "CHECK" ? checkmate?(check_status[1], check_status[2]) : check_status[0] if check_status
     end
  
     def to_json
@@ -372,8 +370,6 @@ class Game
             unless new_check_status
                 player_pieces.each do |piece|
                     if piece.moves.include?(blank)
-                        puts "#{piece.name} can get in the way by moving from #{piece.position} to #{blank}"
-                        gets
                         return "CHECK" unless piece.name == "KING"
                     end
                 end
